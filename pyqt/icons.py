@@ -43,6 +43,7 @@ def main(icon_spec):
     # get all icons and their available sizes
     icons = []
     all_sizes = set([])
+    QIcon.setThemeName('Tango')
     for context, icon_names in icon_spec:
         for icon_name in icon_names:
             icon = QIcon.fromTheme(icon_name)
