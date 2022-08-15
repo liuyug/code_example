@@ -1,4 +1,5 @@
-build
-*.pyd
-*.pyc
-*.o
+build/
+dist/
+__pycache__/
+*.so
+*.dll
