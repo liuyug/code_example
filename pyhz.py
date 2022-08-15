@@ -61,7 +61,7 @@ span{display: block; text-align: center;}
         tables.append('</tr>')
 
     tables.append('</table>')
-    with open(os.path.join('build', '卷舌汉字.html'), 'wt') as f:
+    with open(os.path.join('build', '翘舌汉字.html'), 'wt') as f:
         f.write('\n'.join(tables))
 
 
