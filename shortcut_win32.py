@@ -16,6 +16,10 @@ def create_shortcut(file_path, lnk_path=None, icon=None):
     if not icon:
         icon = file_path
 
+    file_path = os.path.abspath(file_path)
+    lnk_path = os.path.abspath(lnk_path)
+    icon = os.path.abspath(icon)
+
     shortcut = pythoncom.CoCreateInstance(
         shell.CLSID_ShellLink,
         None,
@@ -28,7 +32,9 @@ def create_shortcut(file_path, lnk_path=None, icon=None):
     shortcut.SetIconLocation(icon, 0)
 
     persist_file = shortcut.QueryInterface(pythoncom.IID_IPersistFile)
+
     persist_file.Save(lnk_path, 0)
+    print('Output shortcut: %s' % lnk_path)
 
 
 class App():
@@ -54,7 +60,7 @@ class App():
 
         args = parser.parse_args()
         if args.exe:
-            create_shortcut(args.exe, args.lnk_path, args.icon)
+            create_shortcut(args.exe, args.lnk, args.icon)
         else:
             parser.print_help()
 
