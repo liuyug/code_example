@@ -4,39 +4,62 @@
 import os
 import argparse
 
+# pip install elevate
+# from elevate import elevate
 
-def crack_key(exe_path, key, fix):
-    print(exe_path)
-    with open(exe_path, 'rb') as f:
+
+def do_crack_app(app_path, key, fix):
+    print(f'Crack {app_path}')
+    bak_file = f'{app_path}.bak'
+
+    with open(app_path, 'rb') as f:
         data = f.read()
 
     for x in range(len(data) - len(key)):
         if data[x:x + len(key)] == key:
-            print('Find and crack')
-            bak_file = f'{exe_path}.bak'
+            print(f'Bak file: {bak_file}')
             if not os.path.exists(bak_file):
-                os.rename(exe_path, bak_file)
+                os.rename(app_path, bak_file)
             else:
-                os.remove(exe_path)
-            print(f'Bak file: {bak_file}...', end='', flush=True)
-            with open(exe_path, 'wb') as f:
+                os.remove(app_path)
+            with open(app_path, 'wb') as f:
                 f.write(data[:x])
                 f.write(fix)
                 f.write(data[x + len(fix):])
             print('crack complete')
-            break
+            return
+    print('Please check version!')
 
 
-def crack_xshell(exe_path):
+def crack_xshell(app_path):
     key_bytes = b'\x74\x11\x6A\x00\x6A\x07\x6A\x01'
     fix_bytes = b'\xeb' + key_bytes[:1]
-    crack_key(exe_path, key_bytes, fix_bytes)
+    do_crack_app(app_path, key_bytes, fix_bytes)
 
 
-def crack_xftp(exe_path):
+def crack_xftp(app_path):
     key_bytes = b'\x75\x10\x6A\x00\x6A\x07\x50\x6A'
     fix_bytes = b'\xeb' + key_bytes[:1]
-    crack_key(exe_path, key_bytes, fix_bytes)
+    do_crack_app(app_path, key_bytes, fix_bytes)
+
+
+def crack_app(app):
+    # elevate()
+
+    print(app)
+    app2 = app.lower()
+    if app2.endswith('xshell.exe'):
+        crack_xshell(app)
+    elif app2.endswith('xftp.exe'):
+        crack_xftp(app)
+    else:
+        print(f'Unknown app: {app}')
+    input('<>')
+
+
+def crack_stdin():
+    in_file = input('Xshell/Xftp: ')
+    crack_app(in_file)
 
 
 class App():
@@ -54,16 +77,13 @@ class App():
         parser.add_argument('--version', action='version', version=about,
                             help='show version')
 
-        parser.add_argument('--xshell', metavar='<xshell.exe>', help='crack xshell')
-        parser.add_argument('--xftp', metavar='<xftp.exe>', help='crack xftp')
+        parser.add_argument('app', metavar='Xshell/Xftp', nargs='?', help='crack Xshell/Xftp')
 
         args = parser.parse_args()
-        if args.xshell:
-            crack_xshell(args.xshell)
-        elif args.xftp:
-            crack_xftp(args.xftp)
+        if args.app:
+            crack_app(args.app)
         else:
-            parser.print_help()
+            crack_stdin()
 
 
 if __name__ == '__main__':
