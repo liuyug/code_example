@@ -47,7 +47,7 @@ def crack_app(app):
     # elevate()
 
     print(app)
-    app2 = app.lower()
+    app2 = app.lower().strip('"')
     if app2.endswith('xshell.exe'):
         crack_xshell(app)
     elif app2.endswith('xftp.exe'):
